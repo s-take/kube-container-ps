@@ -1,4 +1,4 @@
-NAME    := kube-container-ls
+NAME    := kcps
 LDFLAGS := -ldflags="-s -w -extldflags \"-static\""
 
 .PHONY: build
@@ -6,18 +6,7 @@ build:
 	go mod tidy
 
 .PHONY: cross-build
-cross-build:
+cross-build: build
 	for os in darwin linux windows; do \
-		GOOS=$$os GOARCH=$$arch CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo $(LDFLAGS) -o dist/$$os/$(NAME); \
+		GOOS=$$os GOARCH=amd64 CGO_ENABLED=0 go build -a -tags netgo -installsuffix netgo $(LDFLAGS) -o dist/$(NAME)_$$os; \
 	done
-
-.PHONY: build-linux
-build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o dist/test -v
-
-.PHONY: build-mac
-build-mac:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o dist/test -v
-
-task1:
-	@echo "task1実行"
